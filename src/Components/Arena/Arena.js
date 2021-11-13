@@ -10,6 +10,8 @@ import './Arena.css';
 const Arena = ({ characterNFT }) => {
   // State
   const [gameContract, setGameContract] = useState(null);
+  //state to hold the boss metadata
+  const [boss, setBoss] = useState(null);
 
   // UseEffects
   useEffect(() => {
@@ -29,6 +31,18 @@ const Arena = ({ characterNFT }) => {
       console.log('Ethereum object not found');
     }
   }, []);
+
+  useEffect(() => {
+      const fetchBoss = async () => {
+          const bossTxn = await gameContract.getBigBoss();
+          console.log('Boss:', bossTxn);
+          setBoss(transformCharacterData(bossTxn));
+      };
+
+      if (gameContract) {
+          fetchBoss();
+      }
+  }, [gameContract]);
 
   return (
     <div className="arena-container">
