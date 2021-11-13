@@ -13,6 +13,9 @@ const Arena = ({ characterNFT }) => {
   //state to hold the boss metadata
   const [boss, setBoss] = useState(null);
 
+
+  const runAttackAction = async () => {}
+
   // UseEffects
   useEffect(() => {
     const { ethereum } = window;
@@ -46,11 +49,51 @@ const Arena = ({ characterNFT }) => {
 
   return (
     <div className="arena-container">
-      {/* Boss */}
-      <p>BOSS GOES HERE</p>
-
-      {/* Character NFT */}
-      <p>CHARACTER NFT GOES HERE</p>
+      {/* Replace your Boss UI with this */}
+      {boss && (
+        <div className="boss-container">
+          <div className={`boss-content`}>
+            <h2>🔥 {boss.name} 🔥</h2>
+            <div className="image-content">
+              <img src={boss.imageURI} alt={`Boss ${boss.name}`} />
+              <div className="health-bar">
+                <progress value={boss.hp} max={boss.maxHp} />
+                <p>{`${boss.hp} / ${boss.maxHp} HP`}</p>
+              </div>
+            </div>
+          </div>
+          <div className="attack-container">
+            <button className="cta-button" onClick={runAttackAction}>
+              {`💥 Attack ${boss.name}`}
+            </button>
+          </div>
+        </div>
+      )}
+  
+        {/* Replace your Character UI with this */}
+    {characterNFT && (
+      <div className="players-container">
+        <div className="player-container">
+          <h2>Your Character</h2>
+          <div className="player">
+            <div className="image-content">
+              <h2>{characterNFT.name}</h2>
+              <img
+                src={characterNFT.imageURI}
+                alt={`Character ${characterNFT.name}`}
+              />
+              <div className="health-bar">
+                <progress value={characterNFT.hp} max={characterNFT.maxHp} />
+                <p>{`${characterNFT.hp} / ${characterNFT.maxHp} HP`}</p>
+              </div>
+            </div>
+            <div className="stats">
+              <h4>{`⚔️ Attack Damage: ${characterNFT.attackDamage}`}</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
     </div>
   );
 };
