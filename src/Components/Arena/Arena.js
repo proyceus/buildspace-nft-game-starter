@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 import { CONTRACT_ADDRESS, transformCharacterData } from '../../constants';
 import myEpicGame from '../../utils/MyEpicGame.json';
 import './Arena.css';
+import LoadingIndicator from '../LoadingIndicator';
 
 /*
  * We pass in our characterNFT metadata so we can a cool card in our UI
@@ -15,6 +16,8 @@ const Arena = ({ characterNFT, setCharacterNFT }) => {
 
   const [attackState, setAttackState] = useState('');
 
+  const [showToast, setShowToast] = useState(false);
+
   const runAttackAction = async () => {
       try {
           if (gameContract) {
@@ -24,6 +27,13 @@ const Arena = ({ characterNFT, setCharacterNFT }) => {
               await attackTxn.wait();
               console.log('attackTxn:', attackTxn);
               setAttackState('hit');
+
+
+              //set show toast state to true and then 5 seconds later switch to false
+              setShowToast(true);
+              setTimeout(() => {
+                  setShowToast(false);
+              }, 5000)
           }
 
       } catch (err) {
@@ -71,7 +81,7 @@ const Arena = ({ characterNFT, setCharacterNFT }) => {
           setCharacterNFT((prevState) => {
               return {...prevState, hp: playerHp};
           });
-      }
+      };
 
       if (gameContract) {
           fetchBoss();
@@ -87,6 +97,13 @@ const Arena = ({ characterNFT, setCharacterNFT }) => {
 
   return (
     <div className="arena-container">
+
+      {boss && characterNFT && (
+        <div id="toast" className={showToast ? 'show' : ''}>
+          <div id="desc">{`💥 ${boss.name} was hit for ${characterNFT.attackDamage}!`}</div>
+        </div>
+      )}
+
       {/* Replace your Boss UI with this */}
       {boss && (
         <div className="boss-container">
@@ -105,6 +122,7 @@ const Arena = ({ characterNFT, setCharacterNFT }) => {
               {`💥 Attack ${boss.name}`}
             </button>
           </div>
+          {attackState === 'attacking' && (<div className="loading-indicator"><LoadingIndicator /><p>Attacking...</p></div>)}
         </div>
       )}
   
