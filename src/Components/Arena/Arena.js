@@ -13,8 +13,24 @@ const Arena = ({ characterNFT }) => {
   //state to hold the boss metadata
   const [boss, setBoss] = useState(null);
 
+  const [attackState, setAttackState] = useState('');
 
-  const runAttackAction = async () => {}
+  const runAttackAction = async () => {
+      try {
+          if (gameContract) {
+              setAttackState('attacking');
+              console.log('Attacking boss...');
+              const attackTxn = await gameContract.attackBoss();
+              await attackTxn.wait();
+              console.log('attackTxn:', attackTxn);
+              setAttackState('hit');
+          }
+
+      } catch (err) {
+          console.error('Error attacking boss:', err);
+          setAttackState('');
+      }
+  }
 
   // UseEffects
   useEffect(() => {
@@ -52,7 +68,7 @@ const Arena = ({ characterNFT }) => {
       {/* Replace your Boss UI with this */}
       {boss && (
         <div className="boss-container">
-          <div className={`boss-content`}>
+          <div className={`boss-content ${attackState}`}>
             <h2>🔥 {boss.name} 🔥</h2>
             <div className="image-content">
               <img src={boss.imageURI} alt={`Boss ${boss.name}`} />
